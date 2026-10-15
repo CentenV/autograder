@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from testresult import TestResult
-from typing import Any
+from typing import Any, Tuple
 from sys import argv
 
 class TestCase(ABC):
@@ -13,7 +13,7 @@ class TestCase(ABC):
     def __init__(self,
                  name: str,
                  max_score: int,
-                 test: Callable[[], (int, str)],
+                 test: Callable[[], Tuple[int, str]],
                  ):
         self.name = name
         self.max_score = max_score

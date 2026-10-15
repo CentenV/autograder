@@ -1,11 +1,14 @@
 import json
+import os
 
 from dataclasses import dataclass, asdict
 from testcase import TestCase
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from testhandler import TestHandler
 from testresult import TestResult
+
+DEFAULT_RESULTS_DIR = "."
 
 class Autograder:
     """
@@ -50,7 +53,14 @@ class Autograder:
                 print(f"\t{test_result.output}")
 
     def output_results_json(self):
-        with open("/autograder/results/results.json", "x") as results_file:
-        # with open("/autograder/results/results.json") as results_file:
+        """
+        Writes results.json to the directory given by the AUTOGRADER_RESULTS_DIR
+        environment variable, defaulting to the current working directory.
+        """
+        results_dir = os.environ.get("AUTOGRADER_RESULTS_DIR", DEFAULT_RESULTS_DIR)
+        os.makedirs(results_dir, exist_ok=True)
+        results_path = os.path.join(results_dir, "results.json")
+
+        with open(results_path, "w") as results_file:
             json.dump({"tests": [asdict(result) for result in self.results]}, results_file, indent=2)
 
