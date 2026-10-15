@@ -2,11 +2,11 @@ import json
 import os
 
 from dataclasses import dataclass, asdict
-from testcase import TestCase
+from .testcase import TestCase
 from typing import Any, Dict, List, Tuple
 
-from testhandler import TestHandler
-from testresult import TestResult
+from .testhandler import TestHandler
+from .testresult import TestResult
 
 DEFAULT_RESULTS_DIR = "."
 

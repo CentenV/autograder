@@ -1,5 +1,5 @@
 import unittest
-from testcase import TestCase
+from autograder import TestCase
 from typing import Any
 from collections.abc import Callable
 

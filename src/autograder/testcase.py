@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from testresult import TestResult
+from .testresult import TestResult
 from typing import Any, Tuple
 from sys import argv
 
