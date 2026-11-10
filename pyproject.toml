@@ -15,8 +15,9 @@ dependencies = []
 dev = ["pytest"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/autograder"]
+packages = ["src/framework"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
+addopts = "-p no:cacheprovider"
+testpaths = ["src/framework/tests", "src/project-autograders/tests"]
+pythonpath = ["src", "src/project-autograders"]
