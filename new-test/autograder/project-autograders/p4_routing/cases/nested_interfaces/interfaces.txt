@@ -1,0 +1,4 @@
+# The handout's example: eth1's /24 lives inside eth0's /22
+eth0 138.67.20.3/22
+eth1 138.67.20.254/24
+eth2 10.1.1.1/30

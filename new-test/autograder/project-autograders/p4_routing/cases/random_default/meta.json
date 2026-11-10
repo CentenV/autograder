@@ -1,0 +1,5 @@
+{
+  "description": "large randomized table with default route",
+  "weight": 10,
+  "visibility": "after_published"
+}

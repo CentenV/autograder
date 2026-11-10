@@ -1,0 +1,5 @@
+{
+  "description": "overlapping routes listed out of order (default route first)",
+  "weight": 10,
+  "visibility": "after_published"
+}

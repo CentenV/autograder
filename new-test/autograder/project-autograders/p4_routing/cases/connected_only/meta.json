@@ -1,0 +1,5 @@
+{
+  "description": "route table containing only comments",
+  "weight": 10,
+  "visibility": "after_published"
+}

@@ -1,0 +1,33 @@
+{
+  "good": {"defines": [], "expect_total": "full"},
+  "ttl_from_1": {
+    "defines": ["BUG_TTL_FROM_1"],
+    "expect_fail": ["first TTL is 2", "exactly 30 datagrams"],
+    "expect_pass": ["well-formed", "stops sending and exits"]
+  },
+  "no_filter": {
+    "defines": ["BUG_NO_FILTER"],
+    "expect_fail": ["Ignores unrelated ICMP"],
+    "expect_pass": ["Basic path", "Silent router"]
+  },
+  "blocking": {
+    "defines": ["BUG_BLOCKING"],
+    "expect_fail": ["No response with TTL of 3", "Two silent routers"],
+    "expect_pass": ["Basic path", "exactly 30 datagrams"]
+  },
+  "bad_checksum": {
+    "defines": ["BUG_BAD_CHECKSUM"],
+    "expect_fail": ["well-formed", "stops sending and exits"],
+    "expect_pass": ["prints the address of each router"]
+  },
+  "no_limit": {
+    "defines": ["BUG_NO_LIMIT"],
+    "expect_fail": ["exactly 30 datagrams"],
+    "expect_pass": ["Basic path", "Silent router"]
+  },
+  "compile_error": {
+    "defines": ["BUG_COMPILE_ERROR"],
+    "expect_total": "zero",
+    "expect_fail": ["Build submission"]
+  }
+}

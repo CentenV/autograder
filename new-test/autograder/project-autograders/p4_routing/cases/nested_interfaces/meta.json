@@ -1,0 +1,5 @@
+{
+  "description": "interface subnet nested inside another interface's subnet",
+  "weight": 10,
+  "visibility": "after_published"
+}

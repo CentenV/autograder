@@ -1,0 +1,8 @@
+CXX ?= g++
+CXXFLAGS = -std=c++17 -Wall -O2 @DEFINES@
+
+router: router.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+clean:
+	rm -f router *.o

@@ -1,0 +1,56 @@
+{
+  "good": {
+    "defines": [],
+    "expect_total": "full"
+  },
+  "first_match": {
+    "defines": [
+      "BUG_FIRST_MATCH"
+    ],
+    "expect_fail": [
+      "overlapping routes",
+      "large randomized"
+    ],
+    "expect_pass": [
+      "handout sample 1",
+      "unreachable destinations",
+      "Defaults"
+    ]
+  },
+  "no_trim": {
+    "defines": [
+      "BUG_NO_TRIM"
+    ],
+    "expect_fail": [
+      "tabs, leading/trailing whitespace"
+    ],
+    "expect_pass": [
+      "handout sample 1",
+      "handout sample 2",
+      "overlapping routes"
+    ]
+  },
+  "hang": {
+    "defines": [
+      "BUG_HANG"
+    ],
+    "expect_total": "zero",
+    "expect_pass": [
+      "Build submission"
+    ]
+  },
+  "compile_error": {
+    "defines": [
+      "BUG_COMPILE_ERROR"
+    ],
+    "expect_total": "zero",
+    "expect_fail": [
+      "Build submission"
+    ]
+  },
+  "prebuilt_binary": {
+    "defines": [],
+    "include_junk_binary": true,
+    "expect_total": "full"
+  }
+}

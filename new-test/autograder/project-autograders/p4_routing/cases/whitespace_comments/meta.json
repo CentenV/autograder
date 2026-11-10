@@ -1,0 +1,5 @@
+{
+  "description": "tabs, leading/trailing whitespace, and indented comments",
+  "weight": 10,
+  "visibility": "after_published"
+}

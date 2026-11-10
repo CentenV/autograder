@@ -1,0 +1,5 @@
+{
+  "description": "no default route: unreachable destinations",
+  "weight": 10,
+  "visibility": "after_published"
+}

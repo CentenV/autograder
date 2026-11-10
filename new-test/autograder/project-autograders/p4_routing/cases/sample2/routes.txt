@@ -1,0 +1,16 @@
+#
+# VPN tunnel clients
+#
+192.167.0.0/18 138.67.129.253
+#
+# HVAC controls clients via Steam Plant
+#
+10.10.0.0/22 138.67.6.23
+#
+# Lock controls clients via McNeil
+#
+10.10.128.0/22 138.67.11.10
+#
+# FRGP/WAN
+#
+0.0.0.0/0 128.87.32.2
