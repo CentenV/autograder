@@ -1,0 +1,13 @@
+CXX ?= g++
+CXXFLAGS = -std=c++17 -O2 @DEFINES@
+OBJ = datagram.o rft-client.o timerC.o unreliableTransport.o
+INC = datagram.h logging.h timerC.h unreliableTransport.h
+
+rft-client: $(OBJ)
+	$(CXX) -o $@ $(OBJ)
+
+%.o: %.cpp $(INC)
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+clean:
+	rm -f rft-client *.o

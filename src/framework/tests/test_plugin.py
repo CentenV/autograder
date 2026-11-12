@@ -46,6 +46,10 @@ def test_param(x):
 def test_560_only():
     pass
 
+@pytest.mark.gs(weight=1, exclude_variants=["560"])
+def test_not_560():
+    pass
+
 def test_unmarked():
     pass
 
@@ -105,6 +109,7 @@ def test_variants(pytester, variant, present):
     args = ["--gs-variant", variant] if variant else []
     _, tests = run(pytester, *args)
     assert ("test_560_only" in tests) is present
+    assert ("test_not_560" in tests) is not present
 
 
 def test_collection_error_still_writes_results(pytester):

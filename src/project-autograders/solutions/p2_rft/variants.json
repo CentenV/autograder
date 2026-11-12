@@ -1,0 +1,68 @@
+{
+  "good": {"defines": [], "expect_total": "full"},
+  "good_560": {"zip_variant": "560", "defines": [], "expect_total": "full"},
+  "no_timeout": {
+    "defines": ["BUG_NO_TIMEOUT"],
+    "expect_fail": ["5% loss", "First datagram lost", "End-of-file datagram lost"],
+    "expect_pass": ["No loss", "Window"]
+  },
+  "window_20": {
+    "defines": ["BUG_WINDOW_20"],
+    "expect_fail": ["never more than 10"],
+    "expect_pass": ["No loss", "Pipelining", "5% loss"]
+  },
+  "stop_and_wait": {
+    "defines": ["BUG_STOP_AND_WAIT"],
+    "expect_fail": ["Pipelining"],
+    "expect_pass": ["No loss", "never more than 10", "5% loss"]
+  },
+  "no_ack_checksum": {
+    "defines": ["BUG_NO_ACK_CHECKSUM"],
+    "expect_fail": ["Ignores corrupted ACKs"],
+    "expect_pass": ["No loss", "Window"]
+  },
+  "seq_from_0": {
+    "defines": ["BUG_SEQ_FROM_0"],
+    "expect_fail": ["No loss", "start at 1"],
+    "expect_pass": ["never more than 10"]
+  },
+  "no_eof_wait": {
+    "defines": ["BUG_NO_EOF_WAIT"],
+    "expect_fail": ["End-of-file datagram lost"],
+    "expect_pass": ["No loss: transfers a text file"]
+  },
+  "text_read": {
+    "defines": ["BUG_TEXT_READ"],
+    "expect_fail": ["binary file", "No loss: transfers a text file"],
+    "expect_pass": ["never more than 10"]
+  },
+  "no_debug_flag": {
+    "defines": ["BUG_NO_DEBUG_FLAG"],
+    "expect_fail": ["-d DEBUG_LEVEL"],
+    "expect_pass": ["No loss", "5% loss"]
+  },
+  "ignore_w_560": {
+    "zip_variant": "560", "defines": ["BUG_IGNORE_W"],
+    "expect_fail": ["-w 5", "-w 20"],
+    "expect_pass": ["-t sets", "reports the total"]
+  },
+  "ignore_t_560": {
+    "zip_variant": "560", "defines": ["BUG_IGNORE_T"],
+    "expect_fail": ["-t sets"],
+    "expect_pass": ["-w 5", "-w 20"]
+  },
+  "no_report_560": {
+    "zip_variant": "560", "defines": ["BUG_NO_REPORT"],
+    "expect_fail": ["reports the total"],
+    "expect_pass": ["-w 5"]
+  },
+  "junk_binary": {
+    "defines": [], "expect_total": "full",
+    "include_junk_binary": true, "junk_names": ["rft-client", "rft-client.o"]
+  },
+  "compile_error": {
+    "defines": ["BUG_COMPILE_ERROR"],
+    "expect_total": "zero",
+    "expect_fail": ["Build submission"]
+  }
+}

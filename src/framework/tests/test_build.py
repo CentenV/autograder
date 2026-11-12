@@ -80,3 +80,26 @@ def test_run_captures_and_caps_output(tmp_path, monkeypatch):
     monkeypatch.setattr(proc, "MAX_CAPTURE", 100)
     r = proc.run(["sh", "-c", "yes | head -c 10000; echo err >&2; exit 3"], cwd=tmp_path, timeout=5)
     assert r.returncode == 3 and "truncated" in r.out and r.err.strip() == "err"
+
+
+def test_background_process_output_and_stop(tmp_path):
+    import signal
+    import time
+    script = "import sys,time\nprint('port 4242', flush=True)\ntime.sleep(30)\n"
+    with proc.start(["python3", "-c", script], cwd=tmp_path) as bg:
+        deadline = time.monotonic() + 5
+        while "4242" not in bg.output()[0] and time.monotonic() < deadline:
+            time.sleep(0.05)
+        assert "port 4242" in bg.output()[0]
+        assert bg.alive()
+        bg.signal(signal.SIGTERM)
+        assert bg.wait(5) is not None
+        result = bg.stop()
+    assert not result.timed_out and result.returncode == -signal.SIGTERM
+
+
+def test_background_stop_kills_running(tmp_path):
+    bg = proc.start(["sleep", "30"], cwd=tmp_path)
+    result = bg.stop()
+    assert result.timed_out and not bg.alive()
+    assert bg.stop() is result

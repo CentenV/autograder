@@ -16,6 +16,9 @@ Marker keywords (all optional):
     tags        list of strings
     variants    course variants the test applies to, e.g. ("560",). Tests
                 whose variants don't include --gs-variant are deselected.
+    exclude_variants
+                course variants the test does NOT apply to, e.g. ("560",) for
+                a 471-only rule that 560 replaces. Kept when no variant is set.
 
 ``gs`` markers merge from module -> class -> function -> parametrize, so a
 module-level ``pytestmark = pytest.mark.gs(visibility="after_published")``
@@ -177,7 +180,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line(
         "markers",
-        "gs(weight=0, name=None, number=None, visibility=None, tags=None, variants=None): Gradescope metadata",
+        "gs(weight=0, name=None, number=None, visibility=None, tags=None, variants=None, exclude_variants=None): Gradescope metadata",
     )
     path = config.getoption("--gs-results")
     config.stash[_STATE] = _State(
@@ -191,8 +194,10 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     variant = config.stash[_STATE].variant
     keep, drop = [], []
     for item in items:
-        variants = gs_meta(item).get("variants")
-        if variants is not None and (variant is None or str(variant) not in {str(v) for v in variants}):
+        meta = gs_meta(item)
+        variants, excluded = meta.get("variants"), meta.get("exclude_variants") or ()
+        if (variants is not None and (variant is None or str(variant) not in {str(v) for v in variants})) \
+                or (variant is not None and str(variant) in {str(v) for v in excluded}):
             drop.append(item)
         else:
             keep.append(item)

@@ -1,0 +1,8 @@
+CXX ?= g++
+CXXFLAGS = -std=c++17 -Wall -O2 @DEFINES@
+
+webServer: webServer.cpp webServer.h logging.h
+	$(CXX) $(CXXFLAGS) -o $@ webServer.cpp
+
+clean:
+	rm -f webServer *.o

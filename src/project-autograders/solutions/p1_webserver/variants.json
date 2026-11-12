@@ -1,0 +1,59 @@
+{
+  "good": {"defines": [], "expect_total": "full"},
+  "good_560": {"zip_variant": "560", "defines": ["COURSE_560"], "expect_total": "full"},
+  "471_solution_in_560": {
+    "zip_variant": "560", "defines": [],
+    "expect_fail": ["560: HEAD", "560: POST"],
+    "expect_pass": ["GET /file1.html", "560: catches SIGINT"]
+  },
+  "no_sigint_560": {
+    "zip_variant": "560", "defines": ["COURSE_560", "BUG_NO_SIGINT"],
+    "expect_fail": ["catches SIGINT"],
+    "expect_pass": ["560: HEAD", "560: POST"]
+  },
+  "no_filter": {
+    "defines": ["BUG_NO_FILTER"],
+    "expect_fail": ["Refuses files", "Path tricks"],
+    "expect_pass": ["GET /file1.html", "image1.jpg", "doesn't exist"]
+  },
+  "text_mode": {
+    "defines": ["BUG_TEXT_MODE"],
+    "expect_fail": ["GET /image1.jpg", "Binary files"],
+    "expect_pass": ["GET /file1.html", "404"]
+  },
+  "no_content_length": {
+    "defines": ["BUG_NO_CONTENT_LENGTH"],
+    "expect_fail": ["Content-Length", "GET /image1.jpg"],
+    "expect_pass": ["GET /file1.html", "Malformed"]
+  },
+  "single_read": {
+    "defines": ["BUG_SINGLE_READ"],
+    "expect_fail": ["a few bytes at a time"],
+    "expect_pass": ["GET /file1.html", "Ignores request header"]
+  },
+  "exit_after_one": {
+    "defines": ["BUG_EXIT_AFTER_ONE"],
+    "expect_fail": ["Keeps serving", "disconnect early"],
+    "expect_pass": ["GET /file1.html", "prints the port"]
+  },
+  "eof_spin": {
+    "defines": ["BUG_EOF_SPIN"],
+    "expect_fail": ["disconnect early"],
+    "expect_pass": ["GET /file1.html", "Keeps serving"]
+  },
+  "port_not_flushed": {
+    "linux_only": true,
+    "defines": ["BUG_PORT_NOT_FLUSHED"],
+    "expect_fail": ["prints the port"],
+    "expect_pass": ["GET /file1.html", "Keeps serving"]
+  },
+  "junk_binary": {
+    "defines": [], "expect_total": "full",
+    "include_junk_binary": true, "junk_names": ["webServer", "webServer.o"]
+  },
+  "compile_error": {
+    "defines": ["BUG_COMPILE_ERROR"],
+    "expect_total": "zero",
+    "expect_fail": ["Build submission"]
+  }
+}

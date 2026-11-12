@@ -12,6 +12,8 @@ For each variant in project-autograders/solutions/<project>/variants.json this:
        expect_total: "full" | "zero"
        expect_pass / expect_fail: substrings of test names; every matching
        test must pass / fail, and at least one test must match.
+       zip_variant: course variant to package and grade with (e.g. "560").
+       linux_only: skip the variant on other platforms (e.g. needs /proc).
 Exit status is non-zero if any expectation fails.
 """
 
@@ -29,9 +31,10 @@ ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_KEYS = {"name", "score", "max_score", "output"}
 
 
-def package(project: str) -> Path:
-    subprocess.run([str(ROOT / "framework" / "tools" / "make_zip.sh"), project], check=True, stdout=subprocess.DEVNULL)
-    return ROOT / "build" / project
+def package(project: str, variant: str = "") -> Path:
+    subprocess.run([str(ROOT / "framework" / "tools" / "make_zip.sh"), project, *([variant] if variant else [])],
+                   check=True, stdout=subprocess.DEVNULL)
+    return ROOT / "build" / (f"{project}-{variant}" if variant else project)
 
 
 def make_submission(sol_dir: Path, variant: dict, dest: Path) -> None:
@@ -45,7 +48,7 @@ def make_submission(sol_dir: Path, variant: dict, dest: Path) -> None:
     (stage / "Makefile").write_text((sol_dir / "Makefile.template").read_text().replace("@DEFINES@", defines))
     (stage / "README.txt").write_text("Reference solution used to validate the autograder.\n")
     if variant.get("include_junk_binary"):
-        for name in ("router", "router.o"):
+        for name in variant.get("junk_names", ["router", "router.o"]):
             (stage / name).write_bytes(b"\x7fELF not really a binary")
             (stage / name).chmod(0o755)
     dest.mkdir(parents=True)
@@ -126,8 +129,12 @@ def main() -> int:
         return 2
     project, only = args[0], set(args[1:])
     variants = json.loads((ROOT / "project-autograders" / "solutions" / project / "variants.json").read_text())
-    source = package(project)
-    ok = all([run_variant(project, source, n, v, verbose) for n, v in variants.items() if not only or n in only])
+    selected = {n: v for n, v in variants.items() if not only or n in only}
+    for n in [n for n, v in selected.items() if v.get("linux_only") and not sys.platform.startswith("linux")]:
+        print(f"SKIP {n:<16} (Linux only)")
+        del selected[n]
+    sources = {zv: package(project, zv) for zv in {v.get("zip_variant", "") for v in selected.values()}}
+    ok = all([run_variant(project, sources[v.get("zip_variant", "")], n, v, verbose) for n, v in selected.items()])
     return 0 if ok else 1
 
 

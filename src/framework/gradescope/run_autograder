@@ -37,7 +37,7 @@ if [ -z "$PROJECT" ] || [ ! -d "$SOURCE_DIR/project-autograders/$PROJECT" ]; the
 fi
 
 cd "$SOURCE_DIR" || exit 0
-python3 -m pytest "project-autograders/$PROJECT" \
+python3 -m pytest "project-autograders/$PROJECT/test.py" \
   --gs-results "$RESULTS" \
   -o console_output_style=classic -rA --tb=short --color=no
 status=$?
