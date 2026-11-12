@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Gradescope entry point. Copied to /autograder/run_autograder by setup.
+# Every path can be overridden for local runs (see tools/selfcheck.py).
+set -u
+
+SOURCE_DIR="${AUTOGRADER_SOURCE_DIR:-/autograder/source}"
+RESULTS_DIR="${AUTOGRADER_RESULTS_DIR:-/autograder/results}"
+PROJECT="${AUTOGRADER_PROJECT:-$(cat "$SOURCE_DIR/PROJECT" 2>/dev/null)}"
+VARIANT="${AUTOGRADER_VARIANT:-$(cat "$SOURCE_DIR/VARIANT" 2>/dev/null || true)}"
+RESULTS="$RESULTS_DIR/results.json"
+
+export AUTOGRADER_VARIANT="$VARIANT"
+export PYTHONDONTWRITEBYTECODE=1
+# Student code runs as this unprivileged user when we're root (created in setup.sh).
+if id student >/dev/null 2>&1; then
+  export AUTOGRADER_STUDENT_USER="${AUTOGRADER_STUDENT_USER:-student}"
+fi
+
+mkdir -p "$RESULTS_DIR"
+rm -f "$RESULTS"
+if [ "$(id -u)" = 0 ]; then
+  # Keep tests/expected outputs and results out of the student user's reach.
+  chmod 700 "$SOURCE_DIR" "$RESULTS_DIR"
+fi
+
+write_fallback() {
+  python3 - "$RESULTS" "$1" <<'EOF'
+import json, sys
+json.dump({"score": 0, "output": sys.argv[2], "stdout_visibility": "hidden"}, open(sys.argv[1], "w"))
+EOF
+}
+
+if [ -z "$PROJECT" ] || [ ! -d "$SOURCE_DIR/projects/$PROJECT" ]; then
+  echo "run_autograder: unknown project '$PROJECT'" >&2
+  write_fallback "Autograder misconfigured (no project). Please tell your instructor."
+  exit 0
+fi
+
+cd "$SOURCE_DIR" || exit 0
+python3 -m pytest "projects/$PROJECT/test.py" \
+  --gs-results "$RESULTS" \
+  -o console_output_style=classic -rA --tb=short --color=no
+status=$?
+echo "pytest exit status: $status"
+
+if [ ! -s "$RESULTS" ]; then
+  write_fallback "The autograder crashed before producing results. Your instructor has been notified; please let them know as well."
+fi
+exit 0

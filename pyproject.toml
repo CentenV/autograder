@@ -5,19 +5,19 @@ build-backend = "hatchling.build"
 [project]
 name = "autograder"
 version = "0.1.0"
-description = "General-purpose autograder framework"
+description = "Gradescope autograder framework (pytest plugin + build/process helpers) and the CSCI 471/560 project graders"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["pytest>=8.3,<10"]
 
-[project.optional-dependencies]
-dev = ["pytest"]
-
+# Only the framework is an installable package; projects/ is graded content
+# packaged into Gradescope zips by tools/make_zip.sh.
 [tool.hatch.build.targets.wheel]
-packages = ["src/framework"]
+packages = ["src/autograder"]
 
 [tool.pytest.ini_options]
-addopts = "-p no:cacheprovider"
-testpaths = ["src/framework/tests", "src/project-autograders/tests"]
-pythonpath = ["src", "src/project-autograders"]
+addopts = ["-p", "no:cacheprovider", "-p", "pytester"]
+testpaths = ["tests", "projects/tests"]
+# Framework (src/) and project packages (p1_webserver, ...) are imported top-level.
+pythonpath = ["src", "projects"]
